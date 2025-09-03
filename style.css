@@ -216,3 +216,8 @@ textarea {
     background-image: url('blue-birds.svg');
     background-repeat: repeat; /* Or repeat-x, repeat-y, etc. */
 }
+
+#footer {
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
