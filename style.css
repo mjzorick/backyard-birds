@@ -213,6 +213,6 @@ textarea {
 }
 
 .bird-bg {
-    background-image: url('img/blue-birds.svg');
+    background-image: url('blue-birds.svg');
     background-repeat: repeat; /* Or repeat-x, repeat-y, etc. */
 }
