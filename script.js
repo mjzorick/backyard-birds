@@ -33,12 +33,10 @@ function App() {
             }
             
             const data = await response.json();
-            console.log('eBird API response:', data);
             
             if (data && data.length > 0) {
                 // Limit to first 10 sightings for display
                 setSightings(data.slice(0, 12));
-                console.log(`Successfully loaded ${data.slice(0, 12).length} bird sightings`);
             } else {
                 setSightings([]);
             }
@@ -319,9 +317,9 @@ function StateRegionItem({ region: bird }) {
     );
 }
 
+
 // Initialize React App
 document.addEventListener('DOMContentLoaded', function() {
-    console.log('🚀 React App initialized!');
     
     // Handle the state form submission
     const stateForm = document.getElementById('stateForm');
@@ -422,7 +420,6 @@ document.addEventListener('DOMContentLoaded', function() {
         ReactDOM.render(sightingsApp, sightingsContainer.querySelector('div') || sightingsContainer);
     }
 
-    console.log('React components mounted and ready!');
 });
 
 // Helper function to create section containers if they don't exist
@@ -448,3 +445,174 @@ style.textContent = `
     }
 `;
 document.head.appendChild(style);
+
+// Contact Form Functionality
+document.addEventListener('DOMContentLoaded', function() {
+    // Initialize EmailJS
+    emailjs.init("Eo08_wQ-JXXxut-23"); // Public Key
+    
+    const contactForm = document.getElementById('contactForm');
+    const submitButton = document.getElementById('submitButton');
+    const buttonText = submitButton.querySelector('.button-text');
+    const loadingText = submitButton.querySelector('.loading-text');
+    const successMessage = document.getElementById('form-success');
+    const errorMessage = document.getElementById('form-error');
+    
+    // Form validation functions
+    function validateName(name) {
+        const nameRegex = /^[a-zA-Z\s]{2,50}$/;
+        return nameRegex.test(name.trim());
+    }
+    
+    function validateEmail(email) {
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return emailRegex.test(email.trim());
+    }
+    
+    function validateMessage(message) {
+        return message.trim().length >= 10 && message.trim().length <= 1000;
+    }
+    
+    function showError(fieldId, message) {
+        const errorElement = document.getElementById(fieldId + '-error');
+        const inputElement = document.getElementById(fieldId);
+        
+        errorElement.textContent = message;
+        errorElement.classList.remove('hidden');
+        inputElement.classList.add('border-red-500', 'focus:ring-red-500');
+        inputElement.classList.remove('border-gray-300', 'focus:ring-blue-500');
+    }
+    
+    function clearError(fieldId) {
+        const errorElement = document.getElementById(fieldId + '-error');
+        const inputElement = document.getElementById(fieldId);
+        
+        errorElement.classList.add('hidden');
+        inputElement.classList.remove('border-red-500', 'focus:ring-red-500');
+        inputElement.classList.add('border-gray-300', 'focus:ring-blue-500');
+    }
+    
+    function clearAllErrors() {
+        ['name', 'email', 'message'].forEach(clearError);
+    }
+    
+    function showFormMessage(isSuccess, message = '') {
+        successMessage.classList.add('hidden');
+        errorMessage.classList.add('hidden');
+        
+        if (isSuccess) {
+            successMessage.classList.remove('hidden');
+        } else {
+            if (message) {
+                document.getElementById('error-message').textContent = message;
+            }
+            errorMessage.classList.remove('hidden');
+        }
+    }
+    
+    function setLoading(loading) {
+        submitButton.disabled = loading;
+        if (loading) {
+            buttonText.classList.add('hidden');
+            loadingText.classList.remove('hidden');
+        } else {
+            buttonText.classList.remove('hidden');
+            loadingText.classList.add('hidden');
+        }
+    }
+    
+    // Real-time validation
+    document.getElementById('name').addEventListener('blur', function() {
+        const name = this.value;
+        if (name && !validateName(name)) {
+            showError('name', 'Please enter a valid name (2-50 characters, letters and spaces only)');
+        } else if (name) {
+            clearError('name');
+        }
+    });
+    
+    document.getElementById('email').addEventListener('blur', function() {
+        const email = this.value;
+        if (email && !validateEmail(email)) {
+            showError('email', 'Please enter a valid email address');
+        } else if (email) {
+            clearError('email');
+        }
+    });
+    
+    document.getElementById('message').addEventListener('blur', function() {
+        const message = this.value;
+        if (message && !validateMessage(message)) {
+            showError('message', 'Message must be between 10 and 1000 characters');
+        } else if (message) {
+            clearError('message');
+        }
+    });
+    
+    // Form submission
+    contactForm.addEventListener('submit', async function(e) {
+        e.preventDefault();
+        
+        // Clear previous messages
+        showFormMessage(false, '');
+        clearAllErrors();
+        
+        // Get form data
+        const formData = new FormData(contactForm);
+        const name = formData.get('name');
+        const email = formData.get('email');
+        const message = formData.get('message');
+        
+        // Validate all fields
+        let isValid = true;
+        
+        if (!name || !validateName(name)) {
+            showError('name', 'Please enter a valid name (2-50 characters, letters and spaces only)');
+            isValid = false;
+        }
+        
+        if (!email || !validateEmail(email)) {
+            showError('email', 'Please enter a valid email address');
+            isValid = false;
+        }
+        
+        if (!message || !validateMessage(message)) {
+            showError('message', 'Message must be between 10 and 1000 characters');
+            isValid = false;
+        }
+        
+        if (!isValid) {
+            return;
+        }
+        
+        // Set loading state
+        setLoading(true);
+        
+        try {
+            const result = await emailjs.send('service_uabzs7h', 'template_7jbjswk', {
+                from_name: name,
+                from_email: email,
+                message: message,
+                to_email: 'maryjane.zorick@gmail.com'
+            });
+            
+            // Simulate API call delay
+            await new Promise(resolve => setTimeout(resolve, 2000));
+            
+            console.log('Form submitted:', { name, email, message, to: 'maryjane.zorick@gmail.com' });
+            
+            showFormMessage(true);
+            contactForm.reset();
+            
+            // Scroll to success message
+            successMessage.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            
+        } catch (error) {
+            console.error('Error sending email:', error);
+            showFormMessage(false, 'Sorry, there was an error sending your message. Please try again or contact us directly.');
+        } finally {
+            setLoading(false);
+        }
+    });
+
+});

@@ -196,24 +196,8 @@ textarea {
     }
 }
 
-/* Animation classes */
-.fade-in {
-    animation: fadeIn 0.5s ease-in;
-}
-
-@keyframes fadeIn {
-    from {
-        opacity: 0;
-        transform: translateY(20px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
 .bird-bg {
-    background-image: url('blue-birds.svg');
+    background-image: url('img/blue-birds.svg');
     background-repeat: repeat; /* Or repeat-x, repeat-y, etc. */
 }
 
