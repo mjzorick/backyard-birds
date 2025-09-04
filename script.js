@@ -7,12 +7,12 @@ function App() {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
 
-    // Fetch recent bird sightings on component mount
+    // Fetch recent bird sightings
     useEffect(() => {
         fetchRecentBirdSightings();
     }, []);
 
-    // Fetch recent bird sightings from eBird API
+    // Fetch from eBird API
     const fetchRecentBirdSightings = async () => {
         setLoading(true);
         setError(null);
@@ -34,7 +34,7 @@ function App() {
             const data = await response.json();
             
             if (data && data.length > 0) {
-                // Limit to first 10 sightings for display
+                // First 12 sightings
                 setSightings(data.slice(0, 12));
             } else {
                 setSightings([]);
@@ -206,7 +206,7 @@ function NotableBirdItem({ bird }) {
     );
 }
 
-// State Notable Birds List Component
+// Notable Birds List Component
 function StateRegionsList({ regions, loading, error, stateName }) {
     if (loading) {
         return React.createElement(
@@ -284,17 +284,17 @@ function StateRegionItem({ region: bird }) {
                     React.createElement(
                         'p',
                         null,
-                        `📍 ${bird.locName}`
+                        `${bird.locName}`
                     ),
                     React.createElement(
                         'p',
                         null,
-                        `📅 ${new Date(bird.obsDt).toLocaleDateString()}`
+                        `${new Date(bird.obsDt).toLocaleDateString()}`
                     ),
                     bird.howMany && React.createElement(
                         'p',
                         null,
-                        `🔢 Count: ${bird.howMany}`
+                        `Count: ${bird.howMany}`
                     )
                 )
             ),
@@ -317,8 +317,100 @@ function StateRegionItem({ region: bird }) {
 }
 
 
+// Hero Button Component
+function HeroButton() {
+    const scrollToFindBirds = () => {
+        document.getElementById('find-birds').scrollIntoView({ behavior: 'smooth' });
+    };
+
+    return React.createElement(
+        'button',
+        {
+            type: 'button',
+            onClick: scrollToFindBirds,
+            className: 'bg-slate-500 text-white py-3 px-8 rounded-lg hover:bg-blue-700 transition-colors duration-300 font-medium shadow-md hover:shadow-lg transform hover:-translate-y-1'
+        },
+        'Find Birds Near You'
+    );
+}
+
+// Mobile Navigation Functionality
+function initMobileNavigation() {
+    const mobileMenuButton = document.getElementById('mobile-menu-button');
+    const mobileNavigation = document.getElementById('mobile-navigation');
+    const menuIcon = document.getElementById('menu-icon');
+    const closeIcon = document.getElementById('close-icon');
+    
+    if (!mobileMenuButton || !mobileNavigation) return;
+    
+    // Toggle mobile menu
+    const toggleMobileMenu = () => {
+        const isOpen = !mobileNavigation.classList.contains('hidden');
+        
+        if (isOpen) {
+            // Close menu
+            mobileNavigation.classList.add('hidden');
+            menuIcon.classList.remove('hidden');
+            closeIcon.classList.add('hidden');
+            mobileMenuButton.setAttribute('aria-expanded', 'false');
+        } else {
+            // Open menu
+            mobileNavigation.classList.remove('hidden');
+            menuIcon.classList.add('hidden');
+            closeIcon.classList.remove('hidden');
+            mobileMenuButton.setAttribute('aria-expanded', 'true');
+        }
+    };
+    
+    // Add click event to mobile menu button
+    mobileMenuButton.addEventListener('click', toggleMobileMenu);
+    
+    // Close mobile menu when clicking on a link
+    const mobileLinks = mobileNavigation.querySelectorAll('a');
+    mobileLinks.forEach(link => {
+        link.addEventListener('click', () => {
+            // Close menu after a short delay to allow navigation
+            setTimeout(() => {
+                mobileNavigation.classList.add('hidden');
+                menuIcon.classList.remove('hidden');
+                closeIcon.classList.add('hidden');
+                mobileMenuButton.setAttribute('aria-expanded', 'false');
+            }, 100);
+        });
+    });
+    
+    // Close menu when clicking outside
+    document.addEventListener('click', (event) => {
+        if (!mobileMenuButton.contains(event.target) && !mobileNavigation.contains(event.target)) {
+            mobileNavigation.classList.add('hidden');
+            menuIcon.classList.remove('hidden');
+            closeIcon.classList.add('hidden');
+            mobileMenuButton.setAttribute('aria-expanded', 'false');
+        }
+    });
+    
+    // Close menu on escape key
+    document.addEventListener('keydown', (event) => {
+        if (event.key === 'Escape' && !mobileNavigation.classList.contains('hidden')) {
+            mobileNavigation.classList.add('hidden');
+            menuIcon.classList.remove('hidden');
+            closeIcon.classList.add('hidden');
+            mobileMenuButton.setAttribute('aria-expanded', 'false');
+        }
+    });
+}
+
 // Initialize React App
 document.addEventListener('DOMContentLoaded', function() {
+    
+    // Initialize mobile navigation
+    initMobileNavigation();
+    
+    // Mount Hero Button
+    const heroButtonContainer = document.getElementById('find-birds-hero-button');
+    if (heroButtonContainer) {
+        ReactDOM.render(React.createElement(HeroButton), heroButtonContainer);
+    }
     
     // Handle the state form submission
     const stateForm = document.getElementById('stateForm');
@@ -405,7 +497,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Render React components
     if (sightingsContainer) {
-        // Clear existing content but keep the section structure
+        // Clear existing content
         const existingList = sightingsContainer.querySelector('#sightingsList');
         if (existingList) {
             existingList.parentNode.replaceChild(
@@ -421,7 +513,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
 });
 
-// Helper function to create section containers if they don't exist
+// Helper - create section containers if they don't exist
 function createSectionContainer(id) {
     const section = document.createElement('section');
     section.id = id;
