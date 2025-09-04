@@ -1,4 +1,3 @@
-// React App for MJ's Backyard Birds
 const { useState, useEffect } = React;
 
 
