@@ -4,7 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
      <meta http-equiv="Cache-Control" content="max-age=3600">
-    <title>Backyard Birds</title>
+    <title>Find Notable Birds nearby and in Your Backyard</title>
+    <meta name="description" content="Ever wondered what birds are native to your area? You can find birds that your neighbors have seen. Jays, swifts, hawks, finches, water birds for example. ">
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://mjzorick.github.io/backyard-birds/" />
+    <meta property="og:image" content="https://mjzorick.github.io/backyard-birds/img/bluejay.webp" />
+    <link rel="icon" type="image/png" sizes="32x32" href="bird-icon.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="bird-icon.png" />
     <script src="https://cdn.tailwindcss.com"></script>
     <script crossorigin src="https://unpkg.com/react@17/umd/react.production.min.js"></script>
     <script crossorigin src="https://unpkg.com/react-dom@17/umd/react-dom.production.min.js"></script>
@@ -19,26 +25,49 @@
         <div class="max-w-6xl mx-auto px-5">
             <div class="flex justify-between items-center">
                 <a href="#" class="text-3xl font-bold text-blue-800 no-underline" aria-label="Backyard Birds - Home">Backyard Birds</a>
-                <nav id="navigation" role="navigation" aria-label="Main navigation">
+                
+                <!-- Mobile menu button -->
+                <button id="mobile-menu-button" class="md:hidden text-blue-800 hover:text-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 rounded p-2" aria-label="Toggle mobile menu" aria-expanded="false">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path id="menu-icon" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                        <path id="close-icon" class="hidden" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                    </svg>
+                </button>
+                
+                <!-- Desktop navigation -->
+                <nav id="navigation" role="navigation" aria-label="Main navigation" class="hidden md:block">
                     <ul class="flex list-none gap-2">
-                        <li><a href="#birds" class="no-underline text-blue-600 font-medium transition-colors duration-300 hover:text-slate-100">Birds</a></li>
-                        <li><a href="#sightings" class="no-underline text-blue-600 font-medium transition-colors duration-300 hover:text-slate-100">Recent Sightings</a></li>
-                        <li><a href="#find-birds" class="no-underline text-blue-600 font-medium transition-colors duration-300 hover:text-slate-100">Find Nearby Birds</a></li>
-                        <li><a href="#contact" class="no-underline text-blue-600 font-medium transition-colors duration-300 hover:text-slate-100">Contact</a></li>       
+                        <li><a href="#birds" class="no-underline text-blue-600 font-medium transition-colors duration-300 hover:text-slate-100 px-3 py-2 rounded">Birds</a></li>
+                        <li><a href="#sightings" class="no-underline text-blue-600 font-medium transition-colors duration-300 hover:text-slate-100 px-3 py-2 rounded">Recent Sightings</a></li>
+                        <li><a href="#find-birds" class="no-underline text-blue-600 font-medium transition-colors duration-300 hover:text-slate-100 px-3 py-2 rounded">Find Nearby Birds</a></li>
+                        <li><a href="#contact" class="no-underline text-blue-600 font-medium transition-colors duration-300 hover:text-slate-100 px-3 py-2 rounded">Contact</a></li>       
                     </ul>
                 </nav>
             </div>
+            
+            <!-- Mobile navigation menu -->
+            <nav id="mobile-navigation" class="hidden md:hidden mt-4 pb-4" role="navigation" aria-label="Mobile navigation">
+                <ul class="flex flex-col space-y-2">
+                    <li><a href="#birds" class="block no-underline text-blue-600 font-medium transition-colors duration-300 hover:bg-blue-50 hover:text-blue-800 px-4 py-3 rounded-lg">Birds</a></li>
+                    <li><a href="#sightings" class="block no-underline text-blue-600 font-medium transition-colors duration-300 hover:bg-blue-50 hover:text-blue-800 px-4 py-3 rounded-lg">Recent Sightings</a></li>
+                    <li><a href="#find-birds" class="block no-underline text-blue-600 font-medium transition-colors duration-300 hover:bg-blue-50 hover:text-blue-800 px-4 py-3 rounded-lg">Find Nearby Birds</a></li>
+                    <li><a href="#contact" class="block no-underline text-blue-600 font-medium transition-colors duration-300 hover:bg-blue-50 hover:text-blue-800 px-4 py-3 rounded-lg">Contact</a></li>
+                </ul>
+            </nav>
         </div>
     </header>
 
     <main id="main-content" role="main">
         <section id="hero" class="max-w-6xl mx-auto px-5 py-16 bg-white" role="region" aria-labelledby="birds-heading">
-            <h2 id="birds-heading" class="text-3xl font-bold text-center mb-8 text-blue-800">Welcome!</h2>
-            <p class="text-center text-gray-600 mb-8 max-w-2xl mx-auto">Have you ever looked out your backdoor, watched a bird, and wondered not only what bird is this, but is it native to my area?</p>
+            <h1 id="birds-heading" class="text-3xl font-bold text-center mb-8 text-blue-800">Welcome to Backyard Birds!</h1>
+            <p class="text-center text-gray-600 mb-8 max-w-2xl mx-auto">Have you ever looked out your backdoor, watched a bird, and wondered not only what bird is this, but is it native to my area? You can easily find out with this site.</p>
+            <div class="text-center" id="find-birds-hero-button">
+
+            </div>
         </section>
 
         <section id="birds" class="max-w-6xl mx-auto px-5 py-16 bg-white" role="region" aria-labelledby="birds-heading">
-            <h2 id="birds-heading" class="text-3xl font-bold text-center mb-8 text-blue-800">Birds in My Backyard</h2>
+            <h2 id="birds-heading" class="text-3xl font-bold text-center mb-8 text-blue-800">Birds I often See</h2>
             <p class="text-center text-gray-600 mb-8 max-w-2xl mx-auto">
                 I've been lucky enough to see these birds in my backyard. I've included some fun facts about each bird.
             </p>
